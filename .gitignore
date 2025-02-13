@@ -1,0 +1,11 @@
+# Ignore Terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Ignore Terraform provider files
+.terraform/
+.terraform.lock.hcl
+
+# Ignore AWS credentials (if any)
+terraform.tfvars
+aws_credentials
