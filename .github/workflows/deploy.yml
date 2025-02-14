@@ -28,6 +28,10 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
 
+      - name: Import Existing S3 Bucket (if not already in state)
+        run: |
+            terraform state list | grep aws_s3_bucket.website_bucket || terraform import aws_s3_bucket.website_bucket my-static-website-bucket-123452055
+
       - name: Apply Terraform Changes
         run: terraform apply -auto-approve
 
