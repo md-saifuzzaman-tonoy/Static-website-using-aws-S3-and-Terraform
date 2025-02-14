@@ -55,6 +55,55 @@ resource "aws_s3_object" "error" {
   content_type = "text/html"
 }
 
+resource "aws_cloudfront_distribution" "s3_distribution" {
+  origin {
+    domain_name = aws_s3_bucket_website_configuration.website.website_endpoint
+    origin_id   = "S3-${aws_s3_bucket.website_bucket.id}"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  enabled             = true
+  default_root_object = "index.html"
+
+  default_cache_behavior {
+    target_origin_id       = "S3-${aws_s3_bucket.website_bucket.id}"
+    viewer_protocol_policy = "redirect-to-https"
+
+    allowed_methods = ["GET", "HEAD"]
+    cached_methods  = ["GET", "HEAD"]
+
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl     = 0
+    default_ttl = 3600
+    max_ttl     = 86400
+  }
+
+  price_class = "PriceClass_100"  # Cheapest option (covers North America & Europe)
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true  # Uses the default CloudFront SSL (not a custom domain)
+  }
+}
+
+
 output "website_url" {
   value = aws_s3_bucket_website_configuration.website.website_endpoint
 }
