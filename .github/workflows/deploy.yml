@@ -41,7 +41,7 @@ jobs:
         run: terraform apply -auto-approve
 
       - name: Sync Website Files to S3
-        run: aws s3 sync . s3://my-static-website-bucket-123452055 --delete --exclude ".terraform/*" --exclude "*.tf*" --exclude ".git/*" --exclude ".gitignore" --exclude README.md --exclude .terraform.* --exclude .git/* --exclude .github/*
+        run: aws s3 sync . s3://my-static-website-bucket-123452055 --delete --exclude ".terraform/*" --exclude "*.tf*" --exclude ".git/*" --exclude ".gitignore" --exclude "README.md" --exclude ".github/*"
         
       - name: Invalidate CloudFront Cache
         run: |
