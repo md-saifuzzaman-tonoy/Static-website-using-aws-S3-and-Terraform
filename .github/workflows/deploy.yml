@@ -34,7 +34,7 @@ jobs:
 
       - name: Import Existing CloudFront Distribution (if not already in state)
         run: |
-            terraform state list | grep aws_cloudfront_distribution.website_cdn || terraform import aws_cloudfront_distribution.website_cdn E1N7ZSIV9WHJVG
+            terraform state list | grep aws_cloudfront_distribution.s3_distribution || terraform import aws_cloudfront_distribution.s3_distribution E1N7ZSIV9WHJVG
           
 
       - name: Apply Terraform Changes
