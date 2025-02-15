@@ -32,12 +32,17 @@ jobs:
         run: |
             terraform state list | grep aws_s3_bucket.website_bucket || terraform import aws_s3_bucket.website_bucket my-static-website-bucket-123452055
 
+      - name: Import Existing CloudFront Distribution (if not already in state)
+        run: |
+            terraform state list | grep aws_cloudfront_distribution.website_cdn || terraform import aws_cloudfront_distribution.website_cdn E1N7ZSIV9WHJVG
+          
+
       - name: Apply Terraform Changes
         run: terraform apply -auto-approve
 
       - name: Sync Website Files to S3
-        run: aws s3 sync . s3://my-static-website-bucket-123452055 --delete --exclude ".terraform/*" --exclude "*.tf*" --exclude ".git/*" --exclude ".gitignore" --exclude README.md --exclude .terraform.* --exclude .git/* --exclude .githhub/*
-          
+        run: aws s3 sync . s3://my-static-website-bucket-123452055 --delete --exclude ".terraform/*" --exclude "*.tf*" --exclude ".git/*" --exclude ".gitignore" --exclude README.md --exclude .terraform.* --exclude .git/* --exclude .github/*
+        
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --paths "/*"
